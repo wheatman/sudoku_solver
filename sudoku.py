@@ -1,11 +1,13 @@
 import copy
 import random
+import time
 def solver(puzzle, level = 0):
     startPuzzle = copy.deepcopy(puzzle)
-    for i in range(9):
-        for j in range(9):
-            if puzzle[i][j] == 0:
-                puzzle[i][j] = [1,2,3,4,5,6,7,8,9]
+    if level == 0:
+        for i in range(9):
+            for j in range(9):
+                if puzzle[i][j] == 0:
+                    puzzle[i][j] = [1,2,3,4,5,6,7,8,9]
     a = [0,1,2]
     b = [3,4,5]
     c = [6,7,8]
@@ -41,8 +43,8 @@ def solver(puzzle, level = 0):
     for column in range(9):
         for a in range(9):
             for b in range(9):
-                if a!=b and type(puzzle[a][column]) == list and type(puzzle[b][column]) == list:
-                    if len(puzzle[a][column]) == 2 and puzzle[a][column] == puzzle[b][column]:
+                if a!=b and puzzle[a][column] == puzzle[b][column]:
+                    if len(puzzle[a][column]) == 2:
                         for c in range(9):
                             if type(puzzle[c][column]) == list and c!=a and c!=b:
                                 puzzle[c][column] = [item for item in puzzle[c][column] if item not in puzzle[a][column]]
@@ -54,13 +56,12 @@ def solver(puzzle, level = 0):
                 for c in columns:
                     for d in columns:
                         if (a,c)!= (b,d) and puzzle[a][c] == puzzle[b][d]:
-                            if type(puzzle[a][c]) == list and type(puzzle[b][d]) == list:
-                                if len(puzzle[a][c]) == 2:
-                                    for e in rows:
-                                        for f in columns:
-                                            if type(puzzle[e][f]) == list:
-                                                if (e,f) != (a,c) and (e,f) != (b,d):
-                                                    puzzle[e][f] = [item for item in puzzle[e][f] if item not in puzzle[a][c]]
+                            if len(puzzle[a][c]) == 2:
+                                for e in rows:
+                                    for f in columns:
+                                        if type(puzzle[e][f]) == list:
+                                            if (e,f) != (a,c) and (e,f) != (b,d):
+                                                puzzle[e][f] = [item for item in puzzle[e][f] if item not in puzzle[a][c]]
     for row in puzzle:
         for cell in row:
             if cell == []:
@@ -164,12 +165,15 @@ puzzleMiddle = [[9,0,5,2,0,0,8,4,3],[0,3,0,0,0,0,0,7,0],[4,0,0,6,0,8,0,0,0],[0,0
 puzzleHard = [[3,0,9,0,0,0,4,0,0],[4,8,0,0,0,0,0,0,0],[0,6,2,0,0,0,0,0,0],[2,3,0,0,5,4,7,0,0],[0,0,0,3,0,9,2,0,4],[0,0,0,8,0,0,3,5,1],[0,0,6,0,2,0,8,0,0],[0,0,0,0,9,0,0,0,0],[0,5,8,0,0,0,0,9,0]]
 puzzleExpert = [[0,0,0,0,0,9,0,7,1],[0,0,4,0,3,0,0,0,0],[0,0,0,0,0,0,3,0,0],[3,0,0,0,0,0,0,8,0],[2,0,0,9,5,0,0,0,7],[0,0,0,7,0,1,0,0,3],[0,0,1,3,0,8,0,0,5],[9,0,0,1,0,0,0,0,0],[5,0,0,0,0,0,0,4,0]]
 puzzleExtreme =[[8,0,0,0,0,0,0,0,0],[0,0,3,6,0,0,0,0,0],[0,7,0,0,9,0,2,0,0],[0,5,0,0,0,7,0,0,0],[0,0,0,0,4,5,7,0,0],[0,0,0,1,0,0,0,3,0],[0,0,1,0,0,0,0,6,8],[0,0,8,5,0,0,0,1,0],[0,9,0,0,0,0,4,0,0]]
-puzzle = puzzleExtreme
+puzzle = puzzleExpert
 for row in puzzle:
     print row
+startTime = time.time()
 donePuzzle = solver(puzzle)
+print time.time()-startTime
 print "done"
 for row in donePuzzle:
     print row
+    
 
 
