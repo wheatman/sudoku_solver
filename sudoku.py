@@ -66,15 +66,19 @@ def solver(puzzle, level = 0):
             if cell == []:
                 return False
     if done(puzzle):
-        print "solved the puzzle"
-        for row in puzzle:
-            print row
+        return puzzle
     elif puzzle == startPuzzle:
         (guessPuzzle, elsePuzzle) = makeGuess(puzzle)
-        solver(guessPuzzle, level+1)
-        solver(elsePuzzle, level+1)
+        donePuzzle = solver(guessPuzzle, level+1)
+        if done(donePuzzle):
+            return donePuzzle
+        donePuzzle = solver(elsePuzzle, level+1)
+        if done(donePuzzle):
+            return donePuzzle
     else:
-        solver(puzzle, level+1)
+        donePuzzle = solver(puzzle, level+1)
+        if done(donePuzzle):
+            return donePuzzle
 
     
 def makeGuess(puzzle):
@@ -89,6 +93,8 @@ def makeGuess(puzzle):
     
 
 def done(puzzle):
+    if type(puzzle) != list:
+        return False
     for row in puzzle:
         for cell in row:
             if type(cell) == list or cell == 0:
@@ -162,5 +168,8 @@ puzzle = puzzleExtreme
 for row in puzzle:
     print row
 donePuzzle = solver(puzzle)
+print "done"
+for row in donePuzzle:
+    print row
 
 
