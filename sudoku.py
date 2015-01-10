@@ -1,6 +1,6 @@
 import copy
 import random
-def solver(puzzle, level = 0, guess = 0):
+def solver(puzzle, level = 0):
     startPuzzle = copy.deepcopy(puzzle)
     for i in range(9):
         for j in range(9):
@@ -9,12 +9,13 @@ def solver(puzzle, level = 0, guess = 0):
     a = [0,1,2]
     b = [3,4,5]
     c = [6,7,8]
+    # look through every cell and eliminate the choices that can be eliminated with the known cells 
     for row in range(9):
         for column in range(9):
-            if type(puzzle[row][column]) != int:
-                if len(puzzle[row][column]) == 1:
-                    puzzle[row][column] = puzzle[row][column][0]
-            if type(puzzle[row][column]) == int:
+            if type(puzzle[row][column]) != int: # if the cell is not already known
+                if len(puzzle[row][column]) == 1: # if there is only one choice
+                    puzzle[row][column] = puzzle[row][column][0] # make it known 
+            if type(puzzle[row][column]) == int: # if it is known 
                 for k in range(9): # clear the row
                     if type(puzzle[row][k]) != int:
                         puzzle[row][k] = [item for item in puzzle[row][k] if item != puzzle[row][column]]
@@ -27,22 +28,25 @@ def solver(puzzle, level = 0, guess = 0):
                     for j in columns:
                         if type(puzzle[i][j]) != int:
                             puzzle[i][j] = [item for item in puzzle[i][j] if item != puzzle[row][column]]
+    # if two cells can only be two posibilities and are in a line clear the rest of the row of those cells
     for row in range(9):
         for a in range(9):
             for b in range(9):
                 if a!=b and type(puzzle[row][a]) == list and type(puzzle[row][b]) == list:
-                    if len(puzzle[row][a]) == 2 and len(puzzle[row][b]) == 2 and puzzle[row][a] == puzzle[row][b]:
+                    if puzzle[row][a] == puzzle[row][b] and len(puzzle[row][a]) == 2:
                         for c in range(9):
                             if type(puzzle[row][c]) == list and c!=a and c!=b:
                                 puzzle[row][c] = [item for item in puzzle[row][c] if item not in puzzle[row][a]]
+    # do the same as above but for columns 
     for column in range(9):
         for a in range(9):
             for b in range(9):
                 if a!=b and type(puzzle[a][column]) == list and type(puzzle[b][column]) == list:
-                    if len(puzzle[a][column]) == 2 and len(puzzle[b][column]) == 2 and puzzle[a][column] == puzzle[b][column]:
+                    if len(puzzle[a][column]) == 2 and puzzle[a][column] == puzzle[b][column]:
                         for c in range(9):
                             if type(puzzle[c][column]) == list and c!=a and c!=b:
                                 puzzle[c][column] = [item for item in puzzle[c][column] if item not in puzzle[a][column]]
+    # same as above but for squares  
     for square in range(1,10):
         (rows, columns) = rowsColumnsForSquare(square)
         for a in rows:
@@ -51,7 +55,7 @@ def solver(puzzle, level = 0, guess = 0):
                     for d in columns:
                         if (a,c)!= (b,d) and puzzle[a][c] == puzzle[b][d]:
                             if type(puzzle[a][c]) == list and type(puzzle[b][d]) == list:
-                                if len(puzzle[a][c]) == 2 and len(puzzle[b][d]) == 2:
+                                if len(puzzle[a][c]) == 2:
                                     for e in rows:
                                         for f in columns:
                                             if type(puzzle[e][f]) == list:
@@ -61,43 +65,28 @@ def solver(puzzle, level = 0, guess = 0):
         for cell in row:
             if cell == []:
                 return False
-    if puzzle == startPuzzle:
-        guessPuzzle = copy.deepcopy(puzzle)
-        if makeGuess(guessPuzzle):
-            print "start guess"
-            solver(guessPuzzle, level+1)
+    if done(puzzle):
+        print "solved the puzzle"
+        for row in puzzle:
+            print row
+    elif puzzle == startPuzzle:
+        (guessPuzzle, elsePuzzle) = makeGuess(puzzle)
+        solver(guessPuzzle, level+1)
+        solver(elsePuzzle, level+1)
     else:
         solver(puzzle, level+1)
+
+    
 def makeGuess(puzzle):
-    options = []
+    newPuzzle1 = copy.deepcopy(puzzle)
+    newPuzzle2 = copy.deepcopy(puzzle)
     for i in range(9):
         for j in range(9):
             if type(puzzle[i][j]) == list:
-                if len(puzzle[i][j])!= 0:
-                    options.append([i,j,len(puzzle[i][j])])
-                else:
-                    return False
-    minpos = 9
-    for item in options:
-        if item[2]<minpos:
-            minpos = item[2]
-    for item in options:
-        if item[2]>minpos:
-            options.remove(item)
-    print 1
-    print options
-    print 1
-    if len(options)==0:
-        return False
-    elif len(options)==1:
-        rand = 0
-    else:
-        rand = random.randint(0,len(options)-1)
-    puzzle[options[rand][0]][options[rand][1]] = puzzle[options[rand][0]][options[rand][1]][0]
-    return True
+                newPuzzle1[i][j] = puzzle[i][j][0]
+                newPuzzle2[i][j] = puzzle[i][j][1:]
+                return (newPuzzle1, newPuzzle2)
     
-                
-
 
 def done(puzzle):
     for row in puzzle:
@@ -165,15 +154,13 @@ def gridCell(row, column):
 
 
 puzzleEasy = [[0,0,0,3,0,0,0,4,0],[0,0,2,1,0,4,6,5,9],[0,1,4,0,6,9,8,0,0],[0,0,0,8,0,7,3,0,0],[0,2,0,6,3,0,0,0,0],[0,3,0,0,2,0,0,0,5],[0,0,3,0,0,0,5,0,0],[1,0,0,2,9,0,0,3,8],[0,4,0,0,1,0,2,0,6]]
-puzzlenext = [[9,0,5,2,0,0,8,4,3],[0,3,0,0,0,0,0,7,0],[4,0,0,6,0,8,0,0,0],[0,0,0,7,1,9,0,0,0],[0,0,0,8,5,0,0,0,0],[1,0,4,0,0,2,0,0,0],[0,0,6,9,4,3,2,8,0],[0,0,9,0,0,6,0,0,5],[0,1,0,0,8,0,0,0,0]]
-puzzle = [[3,0,9,0,0,0,4,0,0],[4,8,0,0,0,0,0,0,0],[0,6,2,0,0,0,0,0,0],[2,3,0,0,5,4,7,0,0],[0,0,0,3,0,9,2,0,4],[0,0,0,8,0,0,3,5,1],[0,0,6,0,2,0,8,0,0],[0,0,0,0,9,0,0,0,0],[0,5,8,0,0,0,0,9,0]]
+puzzleMiddle = [[9,0,5,2,0,0,8,4,3],[0,3,0,0,0,0,0,7,0],[4,0,0,6,0,8,0,0,0],[0,0,0,7,1,9,0,0,0],[0,0,0,8,5,0,0,0,0],[1,0,4,0,0,2,0,0,0],[0,0,6,9,4,3,2,8,0],[0,0,9,0,0,6,0,0,5],[0,1,0,0,8,0,0,0,0]]
+puzzleHard = [[3,0,9,0,0,0,4,0,0],[4,8,0,0,0,0,0,0,0],[0,6,2,0,0,0,0,0,0],[2,3,0,0,5,4,7,0,0],[0,0,0,3,0,9,2,0,4],[0,0,0,8,0,0,3,5,1],[0,0,6,0,2,0,8,0,0],[0,0,0,0,9,0,0,0,0],[0,5,8,0,0,0,0,9,0]]
+puzzleExpert = [[0,0,0,0,0,9,0,7,1],[0,0,4,0,3,0,0,0,0],[0,0,0,0,0,0,3,0,0],[3,0,0,0,0,0,0,8,0],[2,0,0,9,5,0,0,0,7],[0,0,0,7,0,1,0,0,3],[0,0,1,3,0,8,0,0,5],[9,0,0,1,0,0,0,0,0],[5,0,0,0,0,0,0,4,0]]
+puzzleExtreme =[[8,0,0,0,0,0,0,0,0],[0,0,3,6,0,0,0,0,0],[0,7,0,0,9,0,2,0,0],[0,5,0,0,0,7,0,0,0],[0,0,0,0,4,5,7,0,0],[0,0,0,1,0,0,0,3,0],[0,0,1,0,0,0,0,6,8],[0,0,8,5,0,0,0,1,0],[0,9,0,0,0,0,4,0,0]]
+puzzle = puzzleExtreme
 for row in puzzle:
     print row
-print "start"
-while not done(puzzle):
-    solver(puzzle)
-    for row in puzzle:
-        print row
-for row in puzzle:
-    print row
+donePuzzle = solver(puzzle)
+
 
