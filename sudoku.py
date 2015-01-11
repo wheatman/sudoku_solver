@@ -83,7 +83,7 @@ def solver(puzzle, level = 0):
     
 def makeGuess(puzzle):
     newPuzzle1 = copy.deepcopy(puzzle)
-    newPuzzle2 = copy.deepcopy(puzzle)
+    newPuzzle2 = puzzle
     for i in range(9):
         for j in range(9):
             if type(puzzle[i][j]) == list:
