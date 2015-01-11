@@ -8,27 +8,26 @@ def solver(puzzle, level = 0):
             for j in range(9):
                 if puzzle[i][j] == 0:
                     puzzle[i][j] = [1,2,3,4,5,6,7,8,9]
-    a = [0,1,2]
-    b = [3,4,5]
-    c = [6,7,8]
     # look through every cell and eliminate the choices that can be eliminated with the known cells 
     for row in range(9):
         for column in range(9):
-            if type(puzzle[row][column]) != int: # if the cell is not already known
+            if type(puzzle[row][column]) == list: # if the cell is not already known
                 if len(puzzle[row][column]) == 1: # if there is only one choice
                     puzzle[row][column] = puzzle[row][column][0] # make it known 
             if type(puzzle[row][column]) == int: # if it is known 
-                for k in range(9): # clear the row
-                    if type(puzzle[row][k]) != int:
-                        puzzle[row][k] = [item for item in puzzle[row][k] if item != puzzle[row][column]]
-                for k in range(9): # clear the comumn
-                    if type(puzzle[k][column]) != int:
+                for k in range(9): 
+                    if type(puzzle[row][k]) == list:
+                        # clear the row
+                        if puzzle[row][column] in puzzle[row][k]:
+                            puzzle[row][k] = [item for item in puzzle[row][k] if item != puzzle[row][column]]
+                    if type(puzzle[k][column]) == list:
+                        # clear the column
                         if puzzle[row][column] in puzzle[k][column]:
                             puzzle[k][column] = [item for item in puzzle[k][column] if item != puzzle[row][column]]
                 (square, rows, columns) = gridCell(row, column) # clear the square
                 for i in rows:
                     for j in columns:
-                        if type(puzzle[i][j]) != int:
+                        if type(puzzle[i][j]) == list:
                             puzzle[i][j] = [item for item in puzzle[i][j] if item != puzzle[row][column]]
     # if two cells can only be two posibilities and are in a line clear the rest of the row of those cells
     for row in range(9):
