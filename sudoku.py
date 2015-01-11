@@ -169,8 +169,7 @@ for row in puzzle:
     print row
 startTime = time.time()
 donePuzzle = solver(puzzle)
-print time.time()-startTime
-print "done"
+print "solved in " + str(time.time()-startTime) + " seconds"
 for row in donePuzzle:
     print row
     
