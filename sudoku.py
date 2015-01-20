@@ -2,6 +2,7 @@ import copy
 import random
 import time
 def solver(puzzle, level = 0):
+    #print level
     startPuzzle = copy.deepcopy(puzzle)
     if level == 0:
         for i in range(9):
@@ -33,11 +34,14 @@ def solver(puzzle, level = 0):
     for row in range(9):
         for a in range(9):
             for b in range(9):
-                if a!=b and type(puzzle[row][a]) == list and type(puzzle[row][b]) == list:
-                    if puzzle[row][a] == puzzle[row][b] and len(puzzle[row][a]) == 2:
-                        for c in range(9):
-                            if type(puzzle[row][c]) == list and c!=a and c!=b:
-                                puzzle[row][c] = [item for item in puzzle[row][c] if item not in puzzle[row][a]]
+                if a!=b and puzzle[row][a] == puzzle[row][b]:
+                    if type(puzzle[row][a]) == list:
+                        if len(puzzle[row][a]) == 2:
+                            for c in range(9):
+                                if type(puzzle[row][c]) == list and c!=a and c!=b:
+                                    puzzle[row][c] = [item for item in puzzle[row][c] if item not in puzzle[row][a]]
+
+                            
     # do the same as above but for columns 
     for column in range(9):
         for a in range(9):
@@ -164,8 +168,9 @@ puzzleMiddle = [[9,0,5,2,0,0,8,4,3],[0,3,0,0,0,0,0,7,0],[4,0,0,6,0,8,0,0,0],[0,0
 puzzleHard = [[3,0,9,0,0,0,4,0,0],[4,8,0,0,0,0,0,0,0],[0,6,2,0,0,0,0,0,0],[2,3,0,0,5,4,7,0,0],[0,0,0,3,0,9,2,0,4],[0,0,0,8,0,0,3,5,1],[0,0,6,0,2,0,8,0,0],[0,0,0,0,9,0,0,0,0],[0,5,8,0,0,0,0,9,0]]
 puzzleExpert = [[0,0,0,0,0,9,0,7,1],[0,0,4,0,3,0,0,0,0],[0,0,0,0,0,0,3,0,0],[3,0,0,0,0,0,0,8,0],[2,0,0,9,5,0,0,0,7],[0,0,0,7,0,1,0,0,3],[0,0,1,3,0,8,0,0,5],[9,0,0,1,0,0,0,0,0],[5,0,0,0,0,0,0,4,0]]
 puzzleExtreme =[[8,0,0,0,0,0,0,0,0],[0,0,3,6,0,0,0,0,0],[0,7,0,0,9,0,2,0,0],[0,5,0,0,0,7,0,0,0],[0,0,0,0,4,5,7,0,0],[0,0,0,1,0,0,0,3,0],[0,0,1,0,0,0,0,6,8],[0,0,8,5,0,0,0,1,0],[0,9,0,0,0,0,4,0,0]]
+puzzleExtreme2=[[0,6,1,0,0,7,0,0,3],[0,9,2,0,0,3,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,8,5,3,0,0,0,0],[0,0,0,0,0,0,5,0,4],[5,0,0,0,0,8,0,0,0],[0,4,0,0,0,0,0,0,1],[0,0,0,1,6,0,8,0,0],[6,0,0,0,0,0,0,0,0]]
 empty = [[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]
-puzzle = puzzleExpert
+puzzle = puzzleExtreme2
 for row in puzzle:
     print row
 startTime = time.time()
