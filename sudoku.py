@@ -95,7 +95,7 @@ def solver(puzzle, level = 0):
 
     
 def makeGuess(puzzle):
-    range9 = range(9)
+    range9 = range(9) #[0,3,6,1,4,7,2,5,8]
     newPuzzle1 = copy.deepcopy(puzzle)
     newPuzzle2 = puzzle
     for i in range9:
